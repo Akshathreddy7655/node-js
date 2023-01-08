@@ -1,0 +1,39 @@
+name: demo
+
+on:
+    # Trigger the workflow on push,
+    # but only for the pre-production branch
+    push:
+        branches:
+            - master
+
+env:
+    GITHUB_TOKEN: ${{ secrets.AWS_GITHUB_TOKEN }}
+
+jobs:
+    demo-nodejs:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Configure AWS credentials
+              uses: aws-actions/configure-aws-credentials@v1
+              with:
+                  aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                  aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                  aws-region: ap-south-1
+
+            - name: Login to Amazon ECR
+              id: login-ecr
+              uses: aws-actions/amazon-ecr-login@v1
+
+            - uses: actions/checkout@v2
+            - name: Set env
+              run: echo "GITHUB_BRANCH=$(echo $GITHUB_REF_NAME-$GITHUB_SHA)" >> $GITHUB_ENV
+
+            - name: Build the Docker image And Pushing in GitOps
+              run: |
+                  docker build -t 741053355470.dkr.ecr.ap-south-1.amazonaws.com/demo:$GITHUB_REF_NAME-$GITHUB_SHA . 
+                  docker push 741053355470.dkr.ecr.ap-south-1.amazonaws.com/demo:$GITHUB_REF_NAME-$GITHUB_SHA
+
+
+                  
