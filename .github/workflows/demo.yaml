@@ -36,3 +36,14 @@ jobs:
               run: |
                   docker build -t 741053355470.dkr.ecr.ap-south-1.amazonaws.com/demo:$GITHUB_REF_NAME-$GITHUB_SHA . 
                   docker push 741053355470.dkr.ecr.ap-south-1.amazonaws.com/demo:$GITHUB_REF_NAME-$GITHUB_SHA
+
+
+                  git clone https://github.com/Akshathreddy7655/node-gitops.git
+
+                  cd node-gitops
+
+                  yq e '.spec.template.spec.containers[0].image = "741053355470.dkr.ecr.ap-south-1.amazonaws.com/demo:${{ env.GITHUB_BRANCH }}"' -i deployment.apps/node.yaml
+
+                  git add .
+                  git commit -m "updated newer image"
+                  git push -u origin main
