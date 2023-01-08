@@ -43,7 +43,7 @@ jobs:
 
                   git config user.name "$GITHUB_ACTOR"
                   
-                  git config user.email "$GITHUB_ACTOR@wohlig.com"
+                  git config user.email "$GITHUB_ACTOR@gmail.com"
 
                   cd node-gitops
 
